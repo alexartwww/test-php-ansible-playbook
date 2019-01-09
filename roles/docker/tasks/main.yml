@@ -1,13 +1,13 @@
 - name: Building image
   docker_image:
-    name: artem-image6
+    name: artem-image
     path: "{{ role_path }}/docker"
     state: present
 
 - name: Running the container
   docker_container:
-    name: artem-container6
-    image: artem-image6:latest
+    name: artem-container
+    image: artem-image:latest
     state: started
     published_ports:
       - "2222:22"
