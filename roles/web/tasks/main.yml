@@ -1,0 +1,55 @@
+- name: Ensure that nginx is at the latest version
+  become: true
+  apt: name=nginx-extras state=latest
+
+- name: Start nginx
+  become: true
+  command: /etc/init.d/nginx start
+  register: nginx
+
+- debug: msg="{{ nginx.stdout }}"
+
+- name: Ensure that php7.0-fpm is at the latest version
+  become: true
+  apt: name=php7.0-fpm state=latest
+
+- name: Start php7.0-fpm
+  become: true
+  command: /etc/init.d/php7.0-fpm start
+  register: php-fpm
+
+- debug: msg="{{ nginx.stdout }}"
+
+- name: Creates project root directory
+  become: true
+  file:
+    path: /var/www/default
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: 0775
+
+- name: Ensure that index.php site is there
+  become: true
+  template:
+    src: templates/index.php
+    dest: /var/www/default/index.php
+    owner: www-data
+    group: www-data
+    mode: '0664'
+
+- name: Ensure that nginx config is there
+  become: true
+  template:
+    src: templates/default
+    dest: /etc/nginx/sites-enabled/default
+    owner: root
+    group: root
+    mode: '0664'
+
+- name: Restart nginx
+  become: true
+  command: /etc/init.d/nginx restart
+  register: nginx
+
+- debug: msg="{{ nginx.stdout }}"

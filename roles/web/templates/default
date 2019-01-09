@@ -1,0 +1,26 @@
+server
+{
+	listen 80;
+	server_name _;
+	access_log  off;
+	error_log   /dev/null error;
+
+	root /var/www/default;
+
+	index index.php;
+
+	location /
+	{
+		rewrite ^(.*)$ /index.php?path=$1 last;
+	}
+
+	location /index.php
+	{
+		fastcgi_pass    unix:/var/run/php/php7.0-fpm.sock;
+		fastcgi_index   index.php;
+		fastcgi_param   SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+		fastcgi_read_timeout 60;
+		fastcgi_send_timeout 60;
+		include         fastcgi_params;
+	}
+}

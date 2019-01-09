@@ -1,0 +1,13 @@
+- hosts: local
+  connection: local
+  vars:
+    roles_path: roles
+  roles:
+  - role: "{{ roles_path }}/docker"
+
+- hosts: docker
+  connection: ssh
+  vars:
+    roles_path: roles
+  roles:
+  - role: "{{ roles_path }}/web"
